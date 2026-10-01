@@ -6,25 +6,23 @@
   <meta name="theme-color" content="#05060f" />
   <title>For Wiam ✦ A Little Universe</title>
 
-  <!-- Fonts: opsional, tetap jalan offline dengan fallback -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css" />
-<base target="_blank">
 </head>
 <body>
 
   <!-- ══════════════ PERSISTENT NIGHT SKY ══════════════ -->
-  <div id="sky" aria-hidden="false">
+  <div id="sky">
     <div class="sky-layer" id="stars-back"></div>
     <div class="sky-layer" id="stars-front"></div>
 
     <div id="moon">
       <div class="moon-halo"></div>
       <div class="moon-body"></div>
-      <!-- 🥚 EASTER EGG #1 : a sleeping crescent on the moon -->
+      <!-- EASTER EGG #1 -->
       <span class="hidden-symbol sym-moon" data-symbol="moon" role="button"
             tabindex="0" aria-label="something sleeps here">☾</span>
     </div>
@@ -33,14 +31,14 @@
     <div class="cloud c2"></div>
     <div class="cloud c3"></div>
 
-    <!-- the wandering light (scene 2) -->
-    <div id="wisp" role="button" tabindex="0" aria-label="a small light"></div>
-
     <div id="shooting-star"><span></span></div>
   </div>
 
-  <!-- floating dust / glow particles -->
+  <!-- floating dust -->
   <div id="dust" aria-hidden="true"></div>
+
+  <!-- ✅ FIX: wisp dipindah KELUAR dari #sky agar berada di atas scene -->
+  <div id="wisp" role="button" tabindex="0" aria-label="a small light"></div>
 
   <!-- fx layers -->
   <div id="confetti-layer" aria-hidden="true"></div>
@@ -58,7 +56,7 @@
 
   <main id="journey">
 
-    <!-- ══ SCENE 1 · THE ARRIVAL ══ -->
+    <!-- SCENE 1 · ARRIVAL -->
     <section class="scene active" id="scene-arrival">
       <div class="center-col">
         <p class="arrival-line" id="arr-1">Hey, Wiam...</p>
@@ -67,7 +65,7 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 2 · THE LITTLE UNIVERSE ══ -->
+    <!-- SCENE 2 · LITTLE UNIVERSE -->
     <section class="scene" id="scene-universe">
       <div class="distant-lights" aria-hidden="true">
         <i></i><i></i><i></i><i></i><i></i><i></i>
@@ -75,12 +73,12 @@
       <div class="center-col">
         <p class="hint" id="universe-hint">something is moving out there...</p>
       </div>
-      <!-- 🥚 EASTER EGG #2 : a shy little star -->
+      <!-- EASTER EGG #2 -->
       <span class="hidden-symbol sym-star" id="sym-star" data-symbol="star"
             role="button" tabindex="0" aria-label="a shy little star">✦</span>
     </section>
 
-    <!-- ══ SCENE 3 · THE BIRTHDAY CAKE ══ -->
+    <!-- SCENE 3 · CAKE -->
     <section class="scene" id="scene-cake">
       <div class="center-col">
         <p class="eyebrow reveal">Today is your day.</p>
@@ -113,7 +111,7 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 4 · THE BIRTHDAY MESSAGE ══ -->
+    <!-- SCENE 4 · MESSAGE -->
     <section class="scene" id="scene-message">
       <div class="center-col">
         <p class="calm-line">Another year.</p>
@@ -128,7 +126,7 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 5 · THE THREE DOORS ══ -->
+    <!-- SCENE 5 · THREE DOORS -->
     <section class="scene" id="scene-doors">
       <div class="center-col wide">
         <p class="eyebrow reveal">I left three things for you...</p>
@@ -160,12 +158,12 @@
 
         <p class="hint reveal">look closer... three symbols are hiding in this little universe.</p>
       </div>
-      <!-- 🥚 EASTER EGG #3 : a faint heartbeat near the title -->
+      <!-- EASTER EGG #3 -->
       <span class="hidden-symbol sym-heart" id="sym-heart" data-symbol="heart"
             role="button" tabindex="0" aria-label="a faint heartbeat">♡</span>
     </section>
 
-    <!-- ══ SCENE 6 · A LETTER ══ -->
+    <!-- SCENE 6 · LETTER -->
     <section class="scene" id="scene-letter">
       <div class="center-col">
         <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="open the letter">
@@ -186,11 +184,11 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 7 · MEMORIES ══ -->
+    <!-- SCENE 7 · MEMORIES -->
     <section class="scene" id="scene-memories">
       <div class="center-col wide">
         <p class="eyebrow">little moments, kept.</p>
-        <div class="polaroid-sea" id="polaroid-sea"><!-- polaroids built by JS --></div>
+        <div class="polaroid-sea" id="polaroid-sea"></div>
         <p class="hint">tap a photo to look closer</p>
         <button class="btn-ghost" id="memories-back">← back</button>
       </div>
@@ -204,7 +202,7 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 8 · THE HIDDEN ONE ══ -->
+    <!-- SCENE 8 · HIDDEN ONE -->
     <section class="scene" id="scene-hidden">
       <div class="center-col">
         <div class="orb reveal">🔮</div>
@@ -215,7 +213,7 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 9 · SECRET ROOM ══ -->
+    <!-- SCENE 9 · SECRET ROOM -->
     <section class="scene" id="scene-secret">
       <div class="room" aria-hidden="true">
         <div class="room-window">
@@ -242,7 +240,7 @@
       </div>
     </section>
 
-    <!-- ══ SCENE 10 · FINAL MESSAGE ══ -->
+    <!-- SCENE 10 · FINAL -->
     <section class="scene" id="scene-final">
       <div class="center-col">
         <p class="calm-line" id="fin-1">Wait...</p>
@@ -252,7 +250,7 @@
       </div>
     </section>
 
-    <!-- ══ OUTRO · UNTIL THE NEXT CHAPTER ══ -->
+    <!-- OUTRO -->
     <section class="scene" id="scene-outro">
       <div class="center-col">
         <p class="outro-line" id="outro-text">Until the next chapter... ✦</p>
