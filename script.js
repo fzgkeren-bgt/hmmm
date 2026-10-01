@@ -21,9 +21,9 @@ you give to everyone around you.`;
 // ✏️ EDIT YOUR PHOTOS HERE — ganti src & caption
 const MEMORIES = [
   { src: "photo1.jpeg", caption: "one of the little moments worth remembering." },
-  { src: "assets/photo2.jpeg", caption: "this one still makes me smile." },
-  { src: "assets/photo3.jpeg", caption: "we looked good that day." },
-  { src: "assets/photo4.jpeg", caption: "let's make more of these." },
+  { src: "photo2.jpeg", caption: "this one still makes me smile." },
+  { src: "photo3.jpeg", caption: "we looked good that day." },
+  { src: "photo4.jpeg", caption: "let's make more of these." },
 ];
 
 // ✏️ CHANGE SECRET MESSAGE HERE
