@@ -20,10 +20,10 @@ you give to everyone around you.`;
 
 // ✏️ EDIT YOUR PHOTOS HERE — ganti src & caption
 const MEMORIES = [
-  { src: "photo1", caption: "one of the little moments worth remembering." },
-  { src: "photo2", caption: "this one still makes me smile." },
-  { src: "photo3", caption: "we looked good that day." },
-  { src: "photo4", caption: "let's make more of these." },
+  { src: "/assets/photo1.jpeg", caption: "one of the little moments worth remembering." },
+  { src: "/assets/photo2", caption: "this one still makes me smile." },
+  { src: "/assets/photo3", caption: "we looked good that day." },
+  { src: "/assets/photo4", caption: "let's make more of these." },
 ];
 
 // ✏️ CHANGE SECRET MESSAGE HERE
