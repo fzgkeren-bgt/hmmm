@@ -59,11 +59,7 @@ and enjoy your day. 🤍`;
 const $ = (id) => document.getElementById(id);
 const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-
-/* ══════════════ SOUND ENGINE ══════════════
-   Coba pakai file di assets/. Kalau tidak ada,
-   otomatis memakai synth WebAudio yang lembut. */
+/* ══════════════ SOUND ENGINE ══════════════ */
 
 const Sound = (() => {
   let on = false;
@@ -97,7 +93,6 @@ const Sound = (() => {
     } catch (e) { /* audio tidak didukung — web tetap jalan */ }
   }
 
-  /* ambient pad (fallback synth) */
   function startPad() {
     if (!ctx || pad) return;
     const g = ctx.createGain();
@@ -171,8 +166,9 @@ const Sound = (() => {
       setTimeout(() => blip(fq, 0.8, "triangle", 0.08), i * 110));
   }
 
+  // kalau music.mp3 baru selesai dimuat setelah suara dinyalakan
   music.addEventListener("canplaythrough", () => {
-    if (on && !music.paused_attempted) {
+    if (on) {
       stopPad();
       music.play().catch(() => {});
     }
@@ -244,7 +240,7 @@ buildStars($("stars-front"), 34, 1.5, 3);
   }
 })();
 
-/* ══════════════ PARALLAX (subtle camera) ══════════════ */
+/* ══════════════ PARALLAX ══════════════ */
 
 (function parallax() {
   if (RM) return;
@@ -336,19 +332,16 @@ function wispStart() {
   wisp.classList.add("on");
 }
 
-function wispStop() {
-  cancelAnimationFrame(wispRAF);
-  wisp.classList.remove("on");
-}
-
-function wispTap() {
+function wispTap(e) {
   if (wispDone) return;
   wispDone = true;
+  if (e) e.stopPropagation();
   const r = wisp.getBoundingClientRect();
   burst(r.left + r.width / 2, r.top + r.height / 2, 16);
   Sound.chime(true);
   wisp.classList.add("gone");
   $("universe-hint").textContent = "the light knows the way ✨";
+  setTimeout(() => cancelAnimationFrame(wispRAF), 1500); // hentikan loop setelah memudar
   setTimeout(() => goTo("scene-cake"), 1100);
 }
 wisp.addEventListener("click", wispTap);
@@ -370,7 +363,7 @@ function confetti(n = 130) {
     p.style.left = (Math.random() * 100).toFixed(2) + "vw";
     p.style.background = colors[(Math.random() * colors.length) | 0];
     p.style.setProperty("--cf-x", (Math.random() * 26 - 13).toFixed(1) + "vw");
-    p.style.setProperty("--cf-r", (360 + (Math.random() * 720) | 0) + "deg");
+    p.style.setProperty("--cf-r", (360 + ((Math.random() * 720) | 0)) + "deg");
     p.style.setProperty("--cf-dur", (2.6 + Math.random() * 1.8).toFixed(2) + "s");
     p.style.setProperty("--cf-del", (Math.random() * 0.5).toFixed(2) + "s");
     layer.appendChild(p);
@@ -458,7 +451,6 @@ function blowOut() {
   blowBtn.style.opacity = "0";
   blowBtn.style.pointerEvents = "none";
 
-  /* beat of silence... then BOOM */
   setTimeout(() => {
     flash();
     confetti();
@@ -498,7 +490,7 @@ function unlockOrb() {
 }
 
 document.querySelectorAll(".hidden-symbol").forEach((el) => {
-  el.addEventListener("click", () => collectSymbol(el));
+  el.addEventListener("click", (e) => { e.stopPropagation(); collectSymbol(el); });
   el.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); collectSymbol(el); }
   });
@@ -542,27 +534,27 @@ $("letter-back").addEventListener("click", () => goTo("scene-doors"));
 
 /* ══════════════ SCENE 7 · MEMORIES ══════════════ */
 
+function makePhoto(m) {
+  const img = document.createElement("img");
+  img.src = m.src;
+  img.alt = m.caption;
+  img.addEventListener("error", () => {
+    const fb = document.createElement("div");
+    fb.className = "photo-fallback";
+    fb.textContent = "✦";
+    img.replaceWith(fb);
+  }, { once: true });
+  return img;
+}
+
 (function buildPolaroids() {
   const sea = $("polaroid-sea");
   MEMORIES.forEach((m) => {
     const fig = document.createElement("figure");
     fig.className = "polaroid";
-
-    const img = document.createElement("img");
-    img.src = m.src;
-    img.alt = m.caption;
-    img.loading = "lazy";
-    img.addEventListener("error", () => {
-      const fb = document.createElement("div");
-      fb.className = "photo-fallback";
-      fb.textContent = "✦";
-      img.replaceWith(fb);
-    }, { once: true });
-
     const cap = document.createElement("figcaption");
     cap.textContent = m.caption;
-
-    fig.append(img, cap);
+    fig.append(makePhoto(m), cap);
     fig.addEventListener("click", () => openLightbox(m));
     sea.appendChild(fig);
   });
@@ -572,21 +564,9 @@ function openLightbox(m) {
   const lb = $("lightbox");
   const fig = lb.querySelector("figure");
   fig.innerHTML = "";
-
-  const img = document.createElement("img");
-  img.alt = m.caption;
-  img.src = m.src;
-  img.addEventListener("error", () => {
-    const fb = document.createElement("div");
-    fb.className = "photo-fallback";
-    fb.textContent = "✦";
-    img.replaceWith(fb);
-  }, { once: true });
-
   const cap = document.createElement("figcaption");
   cap.textContent = m.caption;
-
-  fig.append(img, cap);
+  fig.append(makePhoto(m), cap);
   lb.hidden = false;
   Sound.chime();
 }
