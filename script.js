@@ -20,10 +20,10 @@ you give to everyone around you.`;
 
 // ✏️ EDIT YOUR PHOTOS HERE — ganti src & caption
 const MEMORIES = [
-  { src: "photo1.jpg", caption: "one of the little moments worth remembering." },
-  { src: "photo2.jpg", caption: "this one still makes me smile." },
-  { src: "photo3.jpg", caption: "we looked good that day." },
-  { src: "photo4.jpg", caption: "let's make more of these." },
+  { src: "photo1.jpg.jpeg", caption: "one of the little moments worth remembering." },
+  { src: "photo2.jpg.jpeg", caption: "this one still makes me smile." },
+  { src: "photo3.jpg.jpeg", caption: "we looked good that day." },
+  { src: "photo4.jpg.jpeg", caption: "let's make more of these." },
 ];
 
 // ✏️ CHANGE SECRET MESSAGE HERE
@@ -79,7 +79,7 @@ const Sound = (() => {
     return a;
   }
 
-  const music = mk("music.mp3", 0.3, true);
+  const music = mk("music.mp3.mpeg", 0.3, true);
   const chimeFile = mk("assets/chime.mp3", 0.5, false);
   const candleFile = mk("assets/candle.mp3", 0.85, false);
 
