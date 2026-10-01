@@ -61,9 +61,8 @@ button {
   transition: transform 2.4s var(--ease-soft);
   will-change: transform;
 }
-
 body.cine #sky { transform: scale(1.07); }
-body.outro  #sky { transform: scale(1); }
+body.outro #sky { transform: scale(1); }
 
 .sky-layer { position: absolute; inset: 0; }
 #stars-front { transition: transform 0.6s ease-out; will-change: transform; }
@@ -114,9 +113,10 @@ body.outro  #sky { transform: scale(1); }
   inset: -45%;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(190,198,255,0.14) 0%, transparent 62%);
+  pointer-events: none;
 }
 
-/* clouds — soft blurred drifters */
+/* clouds */
 .cloud {
   position: absolute;
   width: 46vw;
@@ -129,13 +129,12 @@ body.outro  #sky { transform: scale(1); }
   animation: drift linear infinite;
 }
 .c1 { top: 12%; left: -20%; animation-duration: 95s; }
-.c2 { top: 34%; left: -35%; animation-duration: 130s; animation-delay: -40s; transform: scale(1.4); }
-.c3 { top: 58%; left: -25%; animation-duration: 115s; animation-delay: -80s; transform: scale(0.8); opacity: 0.7; }
+.c2 { top: 34%; left: -35%; animation-duration: 130s; animation-delay: -40s; transform: scale(1.4); --cs: 1.4; }
+.c3 { top: 58%; left: -25%; animation-duration: 115s; animation-delay: -80s; transform: scale(0.8); opacity: 0.7; --cs: 0.8; }
 @keyframes drift { to { transform: translateX(170vw) scale(var(--cs, 1)); } }
-.c2 { --cs: 1.4; } .c3 { --cs: 0.8; }
 
 /* distant glowing lights */
-.distant-lights { position: absolute; inset: 0; overflow: hidden; }
+.distant-lights { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .distant-lights i {
   position: absolute;
   bottom: 8%;
@@ -158,7 +157,7 @@ body.outro  #sky { transform: scale(1); }
   50% { opacity: 0.85; }
 }
 
-/* the wandering light */
+/* ✅ the wandering light — sekarang di atas semua scene (z-index 30) */
 #wisp {
   position: fixed;
   left: 0; top: 0;
@@ -167,14 +166,21 @@ body.outro  #sky { transform: scale(1); }
   border-radius: 50%;
   background: radial-gradient(circle, #ffffff 0%, #cfd9ff 45%, transparent 72%);
   box-shadow: 0 0 24px 8px rgba(190, 200, 255, 0.55);
-  pointer-events: auto;
+  pointer-events: none;           /* nonaktif sampai scene 2 aktif */
   cursor: pointer;
   opacity: 0;
   transition: opacity 1.4s ease;
   will-change: transform;
-  z-index: 1;
+  z-index: 30;
 }
-#wisp.on { opacity: 1; animation: wisp-pulse 2.2s ease-in-out infinite; }
+/* area sentuh diperluas (target kecil & bergerak) */
+#wisp::after {
+  content: "";
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+}
+#wisp.on { opacity: 1; pointer-events: auto; animation: wisp-pulse 2.2s ease-in-out infinite; }
 #wisp.gone { opacity: 0; pointer-events: none; }
 @keyframes wisp-pulse {
   0%, 100% { box-shadow: 0 0 18px 6px rgba(190,200,255,0.45); }
@@ -266,7 +272,6 @@ body.outro  #sky { transform: scale(1); }
   100% { transform: translate3d(var(--cf-x, 0vw), 108vh, 0) rotate(var(--cf-r, 720deg)); opacity: 0; }
 }
 
-/* burst particles (wisp tap / symbols) */
 .burst-dot {
   position: fixed;
   width: 5px;
@@ -316,6 +321,7 @@ body.outro  #sky { transform: scale(1); }
   border: 1px solid var(--glass-line);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  pointer-events: none;
 }
 .hud-dot {
   font-size: 15px;
@@ -337,6 +343,7 @@ body.outro  #sky { transform: scale(1); }
   position: fixed;
   inset: 0;
   z-index: 10;
+  pointer-events: none;
   transition: filter 0.8s ease, transform 0.8s var(--ease-soft), opacity 0.8s ease;
 }
 body.cine #journey { filter: blur(8px); transform: scale(1.045); opacity: 0; }
@@ -353,12 +360,17 @@ body.outro #journey { opacity: 1; }
   transform: scale(1.02);
   transition: opacity 0.9s ease, transform 0.9s var(--ease-soft), visibility 0.9s;
   overflow: hidden;
+  /* ✅ FIX: scene tidak menangkap klik; hanya elemen interaktif yang menangkap */
+  pointer-events: none;
 }
 .scene.active {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
 }
+.scene.active .center-col,
+.scene.active .hidden-symbol:not(.found),
+.scene.active .lightbox:not([hidden]) { pointer-events: auto; }
 
 .center-col {
   width: min(680px, 100%);
@@ -371,7 +383,7 @@ body.outro #journey { opacity: 1; }
 }
 .center-col.wide { width: min(860px, 100%); }
 
-/* staggered reveal inside active scenes */
+/* staggered reveal */
 .scene .reveal {
   opacity: 0;
   transform: translateY(26px);
@@ -385,7 +397,6 @@ body.outro #journey { opacity: 1; }
 .scene.active .reveal:nth-child(5) { transition-delay: 0.95s; }
 .scene.active .reveal:nth-child(6) { transition-delay: 1.15s; }
 
-/* calm narrative lines */
 .calm-line {
   font-family: var(--serif);
   font-size: clamp(20px, 5vw, 30px);
@@ -399,7 +410,6 @@ body.outro #journey { opacity: 1; }
 }
 .calm-line.in { opacity: 0.94; transform: none; }
 
-/* type blocks */
 .eyebrow {
   font-size: 12px;
   letter-spacing: 0.34em;
@@ -553,7 +563,6 @@ body.outro #journey { opacity: 1; }
 }
 
 .cake { position: relative; width: 250px; height: 230px; }
-.cake.blown .cake-glow, .cake.blown ~ .cake-glow { opacity: 0; }
 
 .tier {
   position: absolute;
@@ -603,7 +612,6 @@ body.outro #journey { opacity: 1; }
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* candles */
 .candles { position: absolute; bottom: 192px; left: 0; right: 0; height: 40px; }
 .candle {
   position: absolute;
@@ -637,7 +645,6 @@ body.outro #journey { opacity: 1; }
   from { transform: translateX(-50%) rotate(-2.5deg) scale(1); }
   to   { transform: translateX(-50%) rotate(3deg) scale(0.86); }
 }
-/* while blowing: flames struggle */
 .cake.struggling .flame {
   animation-duration: 0.28s;
   box-shadow:
@@ -645,7 +652,6 @@ body.outro #journey { opacity: 1; }
     0 0 26px 9px rgba(255, 170, 80, 0.10);
 }
 
-/* tiny ember sparks above flames */
 .spark {
   position: absolute;
   top: -30px;
@@ -667,8 +673,7 @@ body.outro #journey { opacity: 1; }
   100% { opacity: 0; transform: translate(calc(-50% + 8px), -34px) scale(0.3); }
 }
 
-/* blown state */
-.cake.blown .flame { opacity: 0; transform: translateX(-50%) scale(0); transition: 0.45s; }
+.cake.blown .flame { opacity: 0; transform: translateX(-50%) scale(0); transition: 0.45s; animation: none; }
 .cake.blown .spark { animation: none; opacity: 0; }
 .smoke { position: absolute; bottom: 200px; left: 0; right: 0; height: 60px; pointer-events: none; }
 .smoke i {
@@ -709,6 +714,7 @@ body.outro #journey { opacity: 1; }
   stroke-dasharray: 176;
   stroke-dashoffset: 176;
   filter: drop-shadow(0 0 5px rgba(255, 217, 160, 0.8));
+  transition: stroke-dashoffset 0.25s ease;
 }
 .blow-wrap .btn-big { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 .blow-wrap .btn-big:active { transform: translate(-50%, -50%) scale(0.9); }
@@ -748,27 +754,10 @@ body.outro #journey { opacity: 1; }
   transition: opacity 0.4s;
 }
 .door:active .door-glow { opacity: 1; }
-.door-num {
-  font-size: 11px;
-  letter-spacing: 0.3em;
-  color: var(--faint);
-}
-.door-icon {
-  font-size: 46px;
-  filter: drop-shadow(0 0 16px rgba(185, 198, 255, 0.35));
-}
-.door-label {
-  font-family: var(--serif);
-  font-size: 19px;
-  font-style: italic;
-  color: var(--ink);
-}
-.door-lock {
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  color: var(--faint);
-  text-transform: uppercase;
-}
+.door-num { font-size: 11px; letter-spacing: 0.3em; color: var(--faint); }
+.door-icon { font-size: 46px; filter: drop-shadow(0 0 16px rgba(185, 198, 255, 0.35)); }
+.door-label { font-family: var(--serif); font-size: 19px; font-style: italic; color: var(--ink); }
+.door-lock { font-size: 10.5px; letter-spacing: 0.12em; color: var(--faint); text-transform: uppercase; }
 .door.locked .door-icon { filter: grayscale(0.7) drop-shadow(0 0 8px rgba(150, 160, 220, 0.2)); opacity: 0.65; }
 .door.locked { border-style: dashed; }
 .door.locked.deny { animation: deny 0.4s ease; }
@@ -793,11 +782,12 @@ body.outro #journey { opacity: 1; }
 .hidden-symbol {
   position: absolute;
   cursor: pointer;
-  pointer-events: auto;
   color: var(--warm);
   text-shadow: 0 0 10px rgba(255, 217, 160, 0.7);
   transition: transform 0.4s var(--ease-soft), opacity 0.8s;
   z-index: 5;
+  /* area sentuh lebih besar */
+  padding: 10px;
 }
 .hidden-symbol:hover { transform: scale(1.25); }
 .hidden-symbol.found {
@@ -810,29 +800,33 @@ body.outro #journey { opacity: 1; }
   100% { opacity: 0; transform: scale(2.4) translateY(-20px); }
 }
 
+/* ☾ di bulan — dipusatkan tanpa transform (tidak bentrok dengan hover/animasi) */
 .sym-moon {
   bottom: 6%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  width: fit-content;
+  margin-inline: auto;
   font-size: clamp(18px, 4vw, 26px);
   opacity: 0.22;
+  pointer-events: auto;
   animation: sym-sleep 4s ease-in-out infinite alternate;
 }
 @keyframes sym-sleep { from { opacity: 0.12; } to { opacity: 0.3; } }
+.sym-moon.found { animation: symbol-collect 0.9s ease forwards; }
 
 .sym-star {
   top: 24%;
   left: 16%;
   font-size: 20px;
   opacity: 0;
-  pointer-events: none;
 }
 #scene-universe.active .sym-star {
   opacity: 0.35;
-  pointer-events: auto;
   animation: sym-twinkle 2.4s ease-in-out infinite;
   transition: opacity 1.6s ease 1.6s;
 }
+#scene-universe.active .sym-star.found { animation: symbol-collect 0.9s ease forwards; }
 @keyframes sym-twinkle {
   0%, 100% { opacity: 0.15; transform: scale(0.9) rotate(0deg); }
   50% { opacity: 0.6; transform: scale(1.15) rotate(20deg); }
@@ -845,6 +839,7 @@ body.outro #journey { opacity: 1; }
   opacity: 0.16;
   animation: heartbeat 2.6s ease-in-out infinite;
 }
+.sym-heart.found { animation: symbol-collect 0.9s ease forwards; }
 @keyframes heartbeat {
   0%, 100% { transform: scale(1); opacity: 0.1; }
   12% { transform: scale(1.3); opacity: 0.3; }
@@ -954,10 +949,22 @@ body.outro #journey { opacity: 1; }
   font-size: 14px;
 }
 
+/* surat terbuka: kertas membesar & bisa di-scroll */
+.envelope.open { transform: translateY(64px); }
 .envelope.open .env-flap { transform: rotateX(178deg); z-index: 1; }
 .envelope.open .env-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
-.envelope.open .env-letter { transform: translateY(-58%) scale(1.04); }
-.envelope.open { transform: translateY(30px); }
+.envelope.open .env-letter { transform: translateY(-46%) scale(1.05); }
+.envelope.open .letter-paper {
+  height: auto;
+  min-height: min(300px, 44vh);
+  max-height: 46vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.letter-paper::-webkit-scrollbar { width: 4px; }
+.letter-paper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
 
 /* ══════════════ SCENE 7 · MEMORIES ══════════════ */
 
@@ -1022,12 +1029,13 @@ body.outro #journey { opacity: 1; }
   text-overflow: ellipsis;
 }
 
-/* hand-placed positions (rewritten inline by JS for small screens) */
 .polaroid:nth-child(1) { left: 4%;  top: 6%;  --rot: -5deg; }
 .polaroid:nth-child(2) { left: 46%; top: 0%;  --rot: 4deg;  --pfd: 1.1s; }
 .polaroid:nth-child(3) { left: 16%; top: 44%; --rot: 3deg;  --pfd: 0.6s; }
 .polaroid:nth-child(4) { left: 55%; top: 40%; --rot: -4deg; --pfd: 1.6s; }
 
+/* ✅ FIX: atribut hidden harus menang atas display:grid */
+.lightbox[hidden] { display: none; }
 .lightbox {
   position: fixed;
   inset: 0;
@@ -1037,6 +1045,7 @@ body.outro #journey { opacity: 1; }
   -webkit-backdrop-filter: blur(14px);
   display: grid;
   place-items: center;
+  align-content: center;
   padding: 26px;
   animation: lb-in 0.4s ease;
 }
@@ -1092,9 +1101,7 @@ body.outro #journey { opacity: 1; }
   border-radius: 100px 100px 6px 6px;
   overflow: hidden;
   background: #0a0e20;
-  box-shadow:
-    inset 0 0 40px rgba(0, 0, 0, 0.6),
-    0 0 60px rgba(120, 130, 220, 0.08);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 0 60px rgba(120, 130, 220, 0.08);
 }
 .window-sky {
   position: absolute;
@@ -1114,11 +1121,7 @@ body.outro #journey { opacity: 1; }
 .window-rain {
   position: absolute;
   inset: -60% 0 0 0;
-  background: repeating-linear-gradient(
-    14deg,
-    transparent 0 9px,
-    rgba(188, 198, 255, 0.20) 9px 10.5px
-  );
+  background: repeating-linear-gradient(14deg, transparent 0 9px, rgba(188, 198, 255, 0.20) 9px 10.5px);
   animation: rain-fall 0.55s linear infinite;
 }
 @keyframes rain-fall { to { transform: translateY(34%); } }
@@ -1190,6 +1193,7 @@ body.outro #journey { opacity: 1; }
   background: radial-gradient(circle, rgba(255, 226, 170, 0.3) 0%, transparent 65%);
   opacity: 0;
   transition: opacity 0.8s;
+  pointer-events: none;
 }
 .secret-box.open .box-lid { transform: rotate(-118deg) translateY(-4px); }
 .secret-box.open .box-glow { opacity: 1; animation: box-glow-pulse 2.2s ease-in-out infinite alternate; }
@@ -1234,8 +1238,6 @@ body.outro #journey { opacity: 1; }
 
 /* ══════════════ OUTRO ══════════════ */
 
-#scene-outro { pointer-events: none; }
-#scene-outro .center-col { pointer-events: auto; }
 .outro-line {
   font-family: var(--serif);
   font-style: italic;
@@ -1247,6 +1249,11 @@ body.outro #journey { opacity: 1; }
 }
 .outro-line.in { opacity: 1; transform: none; }
 body.outro #vignette { opacity: 0.55; }
+body.outro #symbol-hud {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
 
 /* ══════════════ MOBILE ══════════════ */
 
@@ -1277,34 +1284,3 @@ body.outro #vignette { opacity: 0.55; }
   .room, .orb, .polaroid, .moon-body { animation: none !important; }
   .scene, .scene .reveal, .calm-line { transition-duration: 0.3s; }
 }
-
-
-/* ══ refinements ══ */
-
-/* ring reset halus saat dilepas */
-.ring-fg { transition: stroke-dashoffset 0.25s ease; }
-
-/* surat terbuka: kertas membesar & bisa di-scroll */
-.envelope.open { transform: translateY(64px); }
-.envelope.open .env-letter { transform: translateY(-46%) scale(1.05); }
-.envelope.open .letter-paper {
-  height: auto;
-  min-height: min(300px, 44vh);
-  max-height: 46vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  user-select: text;
-  -webkit-user-select: text;
-}
-.letter-paper::-webkit-scrollbar { width: 4px; }
-.letter-paper::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
-
-/* HUD simbol menghilang saat outro */
-body.outro #symbol-hud {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.2s ease;
-}
-
-/* tap serentak pada polaroid sedang melayang */
-.polaroid.shown { transition: transform .9s var(--ease-soft), opacity .9s ease; }
